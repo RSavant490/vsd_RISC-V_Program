@@ -1,5 +1,5 @@
 > Task - 2
-# Day-0 – Tools Installation
+# Tools Installation
 
 This repository documents how I installed core open-source VLSI tools on an Ubuntu VM and proves each install with verified screenshots in Windows Subsystem for Linux (WSL) 
 ---
