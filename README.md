@@ -1,10 +1,12 @@
-# vsd_RISC-V_Program
+<h1 align="center"><b>RISC‑V Reference SoC Tapeout Program</b></h1>
+<h3 align="center"><b><i><a href="https://in.linkedin.com/in/kunal-ghosh-vlsisystemdesign-com-28084836" target="_blank">-by, Kunal Ghosh</a></i></b></h3>
+
 > Task - 1
 ---
 > Task - 2
 # Day-0 – Tools Installation
 
-This repository documents how I installed core open-source VLSI tools on an Ubuntu VM and proves each install with verification output / screenshots in Windows Subsystem for Linux (WSL) 
+This repository documents how I installed core open-source VLSI tools on an Ubuntu VM and proves each install with verified screenshots in Windows Subsystem for Linux (WSL) 
 ---
 ## Installed tools
 - ✅ Yosys — RTL synthesis
@@ -60,6 +62,23 @@ make
 # 8. Install Yosys system-wide
 sudo make install
 
+```
+### Submodule Initialization (if required)
+
+**Issue:** During `make`, you may see an error like:
+
+`
+Initialize the submodule: Run 'git submodule update --init' to set up 'abc' as a submodule.
+`
+`
+make: *** [Makefile:811: check-git-abc] Error 1
+`
+
+**Solution:** Initialize the git submodules before building:
+
+```bash
+# Initialize and update submodules (run inside the project folder)
+git submodule update --init
 ```
 
 ### Verification
@@ -148,7 +167,36 @@ sudo apt-get install ngspice
 
 > If building from tarball is needed, follow tarball steps; if configure fails with Xaw error, install Xaw dev packages:
 ```bash
+# 1. Update package lists
+sudo apt-get update
+
+# 2. Download Ngspice tarball (from SourceForge)
+wget https://sourceforge.net/projects/ngspice/files/ngspice-37.tar.gz
+
+# 3. Extract the tarball
+tar -zxvf ngspice-37.tar.gz
+cd ngspice-37
+
+# 4. Create a build directory
+mkdir release
+cd release
+
+# 5. Configure the build with X11 and readline support, and disable debug
+../configure --with-x --with-readline=yes --disable-debug
+
+# 6. If Xaw-related errors occur, install extra Xaw libraries
 sudo apt-get install libxaw7-dev xaw3dg xaw3dg-dev
+
+# 7. Compile Ngspice
+make
+
+# 8. Install Ngspice system-wide
+sudo make install
+
+# 9. Re-run configure, make, and install if needed
+../configure --with-x --with-readline=yes --disable-debug
+make
+sudo make install
 ```
 
 ### Verification
@@ -204,7 +252,7 @@ sudo make install
 
 ### Verification
 ```bash
-magic -version
+magic --version
 ```
 
 ### Screenshot
