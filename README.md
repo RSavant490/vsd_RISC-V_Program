@@ -15,14 +15,17 @@ This repository documents how I installed core open-source VLSI tools on an Ubun
 
 
 
+## System configuration used
+- OS: Windows 10/11 with **Windows Subsystem for Linux (WSL 2)** running Ubuntu 20.04+  
+- CPU: 12 logical processors assigned to WSL  
+- RAM: 3759 MB allocated to WSL  
+- Swap: 1024 MB  
+- Disk: 50 GB allocated to WSL  
+**ALL by default not set**
 ---
 
-## System configuration used
-- OS: Ubuntu 20.04+ (VirtualBox VM)
-- RAM: 6 GB
-- Disk: 50 GB
-- CPU: 4 vCPU
-
+> Note: 
+I installed these tools on **WSL Ubuntu** instead of a full VM.
 ---
 
 ## 1) Yosys — RTL synthesis
@@ -61,13 +64,22 @@ sudo make install
 
 ### Verification
 ```bash
-yosys -V
+yosys
+```
+```bash
+#for license
+license
 ```
 
-### Screenshot (upload to `screenshots/yosys.png`)
-![Yosys Verification](screenshots/yosys.png)
 
----
+
+### Screenshot
+<p align="center">
+  <img src="screenshots/yosys.png" alt="Yosys Verification" width="400">
+</p>
+
+> to close or exit yosys press: ctrl+c
+
 
 ## 2) Icarus Verilog (iverilog) — Verilog simulator
 **What it is:** Icarus Verilog compiles and simulates Verilog code (fast for RTL simulation).
@@ -86,10 +98,10 @@ sudo apt-get install iverilog
 iverilog -V
 ```
 
-### Screenshot (upload to `screenshots/iverilog.png`)
-![Icarus Verilog Verification](screenshots/iverilog.png)
-
----
+### Screenshot
+<p align="center">
+  <img src="screenshots/iverilog.png" alt="Icarus Verilog Verification" width="400">
+</p>
 
 ## 3) GTKWave — Waveform viewer
 **What it is:** GTKWave visualizes VCD/EVCD waveforms produced by simulators like iverilog.
@@ -108,10 +120,19 @@ sudo apt-get install gtkwave
 gtkwave --version
 ```
 
-### Screenshot (upload to `screenshots/gtkwave.png`)
-![GTKWave Verification](screenshots/gtkwave.png)
+### Screenshot
+<table>
+  <tr>
+    <td>
+      <img src="screenshots/gtkwave0.png" alt="GTKwave Verification" width="420">
+    </td>
+    <td>
+      <img src="screenshots/gtkwave.png" alt="GTKwave Verification" width="553">
+    </td>
+  </tr>
+</table>
 
----
+> to close or exit GTKwave press: ctrl+c
 
 ## 4) ngspice — Circuit simulator
 **What it is:** SPICE-compatible simulator for analog & mixed-signal circuits.
@@ -132,13 +153,13 @@ sudo apt-get install libxaw7-dev xaw3dg xaw3dg-dev
 
 ### Verification
 ```bash
-ngspice -v
+ngspice --version
 ```
 
-### Screenshot (upload to `screenshots/ngspice.png`)
-![Ngspice Verification](screenshots/ngspice.png)
-
----
+### Screenshot
+<p align="center">
+  <img src="screenshots/ngspice.png" alt="NgSpice Verification" width="400">
+</p>
 
 ## 5) Magic VLSI — Layout editor
 **What it is:** Magic is an open-source layout tool used for GDS and LVS workflows.
@@ -186,8 +207,7 @@ sudo make install
 magic -version
 ```
 
-
-### Screenshot (upload to `screenshots/magic.png`)
-![Magic Verification](screenshots/magic.png)
-
----
+### Screenshot
+<p align="center">
+  <img src="screenshots/magic.png" alt="Magic Verification" width="400">
+</p>
