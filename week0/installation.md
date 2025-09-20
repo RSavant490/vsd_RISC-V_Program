@@ -10,8 +10,6 @@ This repository documents how I installed core open-source VLSI tools on an Ubun
 - ✅ Ngspice — Circuit simulation
 - ✅ Magic VLSI — Layout
 
-
-
 ## System configuration used
 - OS: Windows 10/11 with **Windows Subsystem for Linux (WSL 2)** running Ubuntu 20.04+  
 - CPU: 12 logical processors assigned to WSL  
