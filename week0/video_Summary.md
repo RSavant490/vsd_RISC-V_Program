@@ -1,4 +1,4 @@
-> Task 1
+> Task - 1
 ## 📺 Video Summary — Getting started with Digital VLSI SOC Design and Planning
 
 ## Introduction
