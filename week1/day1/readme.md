@@ -39,7 +39,7 @@ Generates a **VCD (Value Change Dump)** file that stores waveform data.
 
 The VCD can be viewed using **GTKWave** to confirm correct design behavior.
 <p align="center">
-  <img src="images/mux_waveform.png" alt="MUX Waveform" width="600"/>
+  <img src="testbench.png" alt="testbench" width="600"/>
 </p>
 
 ---
@@ -48,7 +48,7 @@ The VCD can be viewed using **GTKWave** to confirm correct design behavior.
 Icarus Verilog (`iverilog`) is a free and open-source Verilog simulation and synthesis tool. It allows you to compile Verilog design files along with testbenches to generate simulation output.
 
 <p align="center">
-  <img src="images/mux_waveform.png" alt="MUX Waveform" width="600"/>
+  <img src="iverilog.png" alt="iverilog" width="600"/>
 </p>
 
 
@@ -115,7 +115,7 @@ gtkwave tb_good_mux.vcd
 
 ---
 <p align="center">
-  <img src="images/mux_waveform.png" alt="MUX Waveform" width="600"/>
+  <img src="muxGTKwave.png" alt="MUX Waveform" width="600"/>
 </p>
 
 
