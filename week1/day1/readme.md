@@ -18,7 +18,7 @@ The aim of this session is to understand:
 3. [Lab: Simulating a 2-to-1 Multiplexer](#lab-simulating-a-2-to-1-multiplexer)
 4. [Verilog Code Analysis](#verilog-code-analysis)
 5. [Introduction to Yosys & Gate Libraries](#introduction-to-yosys--gate-libraries)
-6. [Synthesis Lab with Yosys (Coming Soon)](#synthesis-lab-with-yosys-coming-soon)
+6. [Synthesis Lab with Yosys](#synthesis-lab-with-yosys)
 7. [Summary](#summary)
 
 ---
@@ -59,16 +59,13 @@ Icarus Verilog (`iverilog`) is a free and open-source Verilog simulation and syn
 mkdir vsd
 cd vsd
 ````
-
 *Clone the Sky130 workshop repo*
-````
+```bash
 git clone https://github.com/kunalg123/sky130RTLDesignAndSynthesisWorkshop.git
-
 ````
 *Enter the repo*
-````
+```bash
 cd sky130RTLDesignAndSynthesisWorkshop
-
 ````
 
 **Explore the repo structure:**
@@ -155,17 +152,73 @@ endmodule
 
 ---
 
-## Synthesis Lab with Yosys (Coming Soon)
+## Synthesis Lab with Yosys
 
-⚙️ This section will cover:
+> Note: All file edits in this repository were done using **gedit** instead of **gvim**.
 
-* Running Yosys synthesis.
-* Mapping RTL to gates using Sky130 standard cells.
-* Generating synthesized netlists for further use.
+### Introduction to Yosys & Gate Libraries
 
-> (To be completed in the next session.)
+**Yosys** is an open-source tool for RTL synthesis.  
+After simulation, the next step is **synthesis** → converting RTL Verilog into a gate-level netlist using standard cell libraries (like Sky130).  
+The `lib/` folder in the repo provides these libraries.
+
+### Basic Yosys Synthesis Flow for `good_mux.v`
+
+```yosys
+# Load standard cell library
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+# Read the RTL design
+read_verilog good_mux.v
+
+# Synthesize the top module
+synth -top good_mux
+
+# Map to standard cells
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+# Show the synthesized netlist graphically
+show
+
+# Export synthesized netlist to Verilog
+write_verilog good_mux_netlist.v
+
+# Optional: Open in text editor for inspection
+# Note: Using gedit here instead of gvim
+!gedit good_mux_netlist.v
+
+````
+
+### Handling RTLIL Process Warning
+
+If you get a warning like:
+
+```
+Module good_mux contains RTLIL processes with sync rules...
+Use "proc" to convert processes to logic networks and registers.
+```
+
+You can fix it by running:
+
+```yosys
+proc
+write_verilog -noattr good_mux_netlist.v
+!gedit good_mux_netlist.v
+```
+
+* `proc` converts internal RTLIL processes into logic networks (gates and registers) suitable for Verilog output.
+* Using `-noattr` removes Yosys-specific attributes for a cleaner netlist.
+
+> After this step, the generated Verilog netlist should be ready for gate-level simulation or further flow without warnings.
+
+### Notes
+
+* You can view your netlist at any point with the `show` command.
+* The `.lib` file provides timing and cell information for Sky130 standard cells, which `abc` uses for mapping.
+* This workflow ensures your RTL is safely converted into a synthesizable, gate-level netlist.
+
 <p align="center">
-  <img src="images/mux_waveform.png" alt="MUX Waveform" width="600"/>
+  <img src="mux_netlist.png" alt="netlist" width="600"/>
 </p>
 
 ---
