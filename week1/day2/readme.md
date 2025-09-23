@@ -1,7 +1,29 @@
-# Day 2 – Timing Libraries and Synthesis (Hierarchical vs Flattened)
+# Day 2 – Timing Libraries, Hierarchical vs Flat Synthesis, and Flip-Flop Coding Styles
+
+## Table of Contents
+- [SKY130 PDK Overview](#sky130-pdk-overview)
+- [Decoding tt_025C_1v80 in the SKY130 PDK](#decoding-tt_025c_1v80-in-the-sky130-pdk)
+- [Opening and Exploring the .lib File](#opening-and-exploring-the-lib-file)
+- [Verilog Design for Synthesis](#verilog-design-for-synthesis)
+- [Hierarchical Synthesis](#hierarchical-synthesis)
+- [Flattened Synthesis](#flattened-synthesis)
+- [Submodule-Level Synthesis](#submodule-level-synthesis)
+- [Key Differences: Hierarchical vs Flattened](#key-differences-hierarchical-vs-flattened)
+- [Flip-Flops (DFFs)](#flip-flops-dffs)
+  - [Asynchronous Reset](#a-asynchronous-reset)
+  - [Asynchronous Set](#b-asynchronous-set)
+  - [Synchronous Reset](#c-synchronous-reset)
+- [Simulation Steps](#simulation-steps)
+- [Synthesis of Flip-Flops](#synthesis-of-flip-flops)
+- [Yosys History (Relevant)](#yosys-history-relevant)
+- [Optimization Examples](#optimization-examples)
+- [Combinational Logic Optimization](#combinational-logic-optimization)
+
+---
 
 ## SKY130 PDK Overview
 The **SKY130 Process Design Kit (PDK)** is an open-source library provided for 130nm CMOS technology.  
+
 It includes:
 - **Standard cell libraries** (NAND, NOR, Flip-Flops, etc.)
 - **Timing information** for different process, voltage, and temperature (PVT) conditions
@@ -12,62 +34,46 @@ This information is stored inside `.lib` (Liberty) files.
 ---
 
 ## Decoding `tt_025C_1v80` in the SKY130 PDK
-The library name has important information about the PVT (Process, Voltage, Temperature) conditions:
+Example file: `sky130_fd_sc_hd__tt_025C_1v80.lib`
 
-- **tt** → *Typical-Typical process corner*  
-  - `ss` = Slow-Slow  
-  - `ff` = Fast-Fast  
-- **025C** → Temperature of characterization (25°C here)  
-- **1v80** → Voltage used for characterization (1.8 V)
+- **tt** → Typical process corner (others: ss – slow, ff – fast)  
+- **025C** → Temperature = 25°C  
+- **1v80** → Operating Voltage = 1.8V  
 
-**P, V, T variations** affect performance:
+### PVT (Process, Voltage, Temperature)
 - **P (Process):** Variations due to fabrication  
-- **V (Voltage):** Supply voltage differences  
-- **T (Temperature):** Environmental temperature  
+- **V (Voltage):** Supply voltage changes  
+- **T (Temperature):** Ambient operating temperature  
 
-Together, these determine **delay, power, and leakage** of a design.
+Together, they determine circuit performance.  
 
 ---
 
 ## Opening and Exploring the `.lib` File
-The `.lib` file contains **cell-level information** like delay, power, area, and timing models.
-
-Open the file:
 ```bash
 gedit sky130_fd_sc_hd__tt_025C_1v80.lib
 ````
 
-Tips:
+Inside `.lib`, each **cell** has:
 
-* `:se nu` → Show line numbers
-* `:syntax off` → Disable syntax highlighting (in gvim)
-* Editing is **not allowed**, as these are reference libraries.
+* **Leakage power** (for each input combination)
+* **Area** and **timing information**
+* **Pins with functionality**
 
-### Example Cell Entry
+Example:
 
 ```liberty
-cell(sky130_fd_sc_hd__a2111o_1) {
-    area : ...;
-    pin(...) { ... }
-    power(...) { ... }
-    timing(...) { ... }
+cell (sky130_fd_sc_hd__a2111o_1) {
+    // 2-input AND + OR function
+    // _0, _1, _2 → transistor sizing variants
 }
 ```
 
-* `a2111o` → A logic cell (2-input AND + 3-input OR)
-* `_0, _1, _2, ...` → Different drive strengths
-
-  * Higher number = Wider transistor, larger area, higher power, but less delay
-* Example:
-
-  * Cell with 5 pins → `2^5 = 32` input combinations
-  * `.lib` stores leakage power, timing, and power info for each combination
-
 ---
 
-## Hierarchical vs Flattened Synthesis
+## Verilog Design for Synthesis
 
-### Example Verilog Design
+Example multi-module design:
 
 ```verilog
 module sub_module2 (input a, input b, output y);
@@ -78,73 +84,244 @@ module sub_module1 (input a, input b, output y);
     assign y = a & b;
 endmodule
 
-module multiple_modules (input a, input b, input c , output y);
+module multiple_modules (input a, input b, input c, output y);
     wire net1;
-    sub_module1 u1(.a(a), .b(b), .y(net1));  // net1 = a & b
-    sub_module2 u2(.a(net1), .b(c), .y(y));  // y = (a & b) | c
+    sub_module1 u1(.a(a),.b(b),.y(net1));  // net1 = a & b
+    sub_module2 u2(.a(net1),.b(c),.y(y));  // y = (a & b) | c
 endmodule
 ```
 
 ---
 
-### Hierarchical Synthesis
-
-In **hierarchical synthesis**, Yosys keeps module boundaries. Each submodule is preserved, and connected together in the top module.
-
-#### Commands:
+## Hierarchical Synthesis
 
 ```tcl
 read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 read_verilog multiple_modules.v
 synth -top multiple_modules
 abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
-show multiple_modules
+show
 write_verilog -noattr multiple_modules_hier.v
 !gedit multiple_modules_hier.v
 ```
 
-* **Result:**
-
-  * Netlist is generated **per module**
-  * Submodules are **visible separately**
-  * Useful for debugging
-
-📌 Screenshot was taken here (hierarchical diagram).
+📷 Sample screenshot:
+<p align="center">
+  <img src="hier.png" alt="hierarchy" width="600"/>
+</p>
 
 ---
 
-### Flattened Synthesis
-
-In **flattened synthesis**, Yosys removes hierarchy. All submodules are merged into a **single module** of gates.
-
-This makes it easier for tools to optimize globally, but module boundaries are lost.
-
-#### Commands:
+## Flattened Synthesis
 
 ```tcl
+read_verilog multiple_modules_hier.v
 flatten
 write_verilog -noattr multiple_modules_flat.v
 !gedit multiple_modules_flat.v
 show
 ```
 
-* **Result:**
+📷 Screenshot:
+<p align="center">
+  <img src="flat.png" alt="flattened" width="600"/>
+</p>
+---
 
-  * Only one module (no submodule separation)
-  * Fully optimized at gate level
-  * Easier for backend tools, but harder for debugging
+## Submodule-Level Synthesis
 
-📌 Screenshot was taken here (flattened diagram).
+To synthesize only one submodule:
 
+```tcl
+read_verilog multiple_modules.v
+synth -top sub_module1
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+```
+📷 Screenshot:
+<p align="center">
+  <img src="sub_m1.png" alt="sub_module1" width="600"/>
+</p>
+<p align="center">
+  <img src="sub_mod2.png" alt="sub_module2" width="600"/>
+</p>
 ---
 
 ## Key Differences: Hierarchical vs Flattened
 
-| Aspect           | Hierarchical Synthesis | Flattened Synthesis |
-| ---------------- | ---------------------- | ------------------- |
-| **Structure**    | Preserves modules      | Single flat module  |
-| **Debugging**    | Easier (module-wise)   | Harder (all merged) |
-| **Optimization** | Limited (per module)   | Global optimization |
-| **Netlist**      | Modular netlist        | Flat gate netlist   |
+* **Hierarchical:** Keeps module boundaries, easier debugging
+* **Flattened:** Breaks down into primitive gates, harder to debug but needed for optimization
+
+---
+
+## Flip-Flops (DFFs)
+
+Combinational circuits may cause **glitches** due to propagation delay. To avoid glitches, outputs are registered using **flip-flops**.
+
+### Initialization
+
+* **Reset/Set** signals are used to initialize FFs.
+* Can be **Asynchronous** (independent of clock) or **Synchronous** (dependent on clock).
+
+---
+
+### (a) Asynchronous Reset
+
+```verilog
+module dff_asyncres (input clk, input reset, input d, output reg q);
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            q <= 0;
+        else
+            q <= d;
+    end
+endmodule
+```
+
+### (b) Asynchronous Set
+
+```verilog
+module dff_async_set (input clk, input set, input d, output reg q);
+    always @(posedge clk or posedge set) begin
+        if (set)
+            q <= 1;
+        else
+            q <= d;
+    end
+endmodule
+```
+
+### (c) Synchronous Reset
+
+```verilog
+module dff_syncres (input clk, input reset, input d, output reg q);
+    always @(posedge clk) begin
+        if (reset)
+            q <= 0;
+        else
+            q <= d;
+    end
+endmodule
+```
+
+---
+
+## Simulation Steps
+
+```bash
+iverilog dff_asyncres.v tb_dff_asyncres.v
+./a.out
+gtkwave tb_dff_asyncres.v
+
+iverilog dff_async_set.v tb_dff_async_set.v
+./a.out
+gtkwave tb_dff_async_set.v
+
+iverilog dff_syncres.v tb_dff_syncres.v
+./a.out
+gtkwave tb_dff_syncres.v
+```
+
+📷 Example screenshot:
+<p align="center">
+  <img src=".png" alt="" width="600"/>
+</p>
+---
+
+## Synthesis of Flip-Flops
+
+```tcl
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+read_verilog dff_asyncres.v
+synth -top dff_asyncres
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+
+read_verilog dff_async_set.v
+synth -top dff_async_set
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+
+read_verilog dff_syncres.v
+synth -top dff_syncres
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+```
+
+📷 Sample screenshot:
+<p align="center">
+  <img src=".png" alt="" width="600"/>
+</p>
+---
+
+## Yosys History (Relevant)
+
+```tcl
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog dff_asyncres.v
+synth -top dff_asyncres
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+```
+
+---
+
+## Optimization Examples
+
+### Example 1: Multiply by 2
+
+```verilog
+module mul2 (input [2:0] a, output [3:0] y);
+    assign y = a * 2;
+endmodule
+```
+
+Yosys optimization result:
+
+```verilog
+assign y = {a, 1'h0}; // just left shift
+```
+
+---
+
+### Example 2: Multiply by 9
+
+```verilog
+module mult8 (input [2:0] a , output [5:0] y);
+    assign y = a * 9;
+endmodule
+```
+
+Optimized netlist:
+
+```verilog
+assign y = {a, a}; // concatenation (a*8 + a)
+```
+
+---
+
+## Combinational Logic Optimization
+
+1. **Squeezing logic** for efficiency
+2. **Constant Propagation**
+3. **Boolean Logic Optimization** (K-map, Quine-McCluskey, etc.)
+
+Example:
+
+```verilog
+y = ((A & B) | C)’ , if A = 0 → y = C’
+```
+
+Another:
+
+```verilog
+y = A ? (B ? C : (C ? A : 0)) : !C
+// Simplified → y = A XNOR B
+```
 
 ---
