@@ -13,8 +13,7 @@
   - [Asynchronous Reset](#a-asynchronous-reset)
   - [Asynchronous Set](#b-asynchronous-set)
   - [Synchronous Reset](#c-synchronous-reset)
-- [Simulation Steps](#simulation-steps)
-- [Synthesis of Flip-Flops](#synthesis-of-flip-flops)
+- [Synthesis](#synthesis)
 - [Optimization Examples](#optimization-examples)
 - [Combinational Logic Optimization](#combinational-logic-optimization)
 
@@ -30,7 +29,11 @@ It includes:
 
 This information is stored inside `.lib` (Liberty) files.
 
----
+<p align="center">
+  <img src="sky130.png" alt="sky130" width="600"/>
+</p>
+
+----
 
 ## Decoding `tt_025C_1v80` in the SKY130 PDK
 Example file: `sky130_fd_sc_hd__tt_025C_1v80.lib`
@@ -109,7 +112,7 @@ Screenshot:
   <img src="hier.png" alt="hierarchy" width="600"/>
 </p>
 
----
+----
 
 ## Flattened Synthesis
 
@@ -125,7 +128,7 @@ Screenshot:
 <p align="center">
   <img src="flat.png" alt="flattened" width="600"/>
 </p>
----
+----
 
 ## Submodule-Level Synthesis
 
@@ -144,7 +147,8 @@ Screenshot:
 <p align="center">
   <img src="sub_mod2.png" alt="sub_module2" width="600"/>
 </p>
----
+
+----
 
 ## Key Differences: Hierarchical vs Flattened
 
@@ -175,6 +179,17 @@ module dff_asyncres (input clk, input async_reset, input d, output reg q);
       q <= d;
 endmodule
 ```
+## Simulation Steps
+
+```bash
+iverilog dff_asyncres.v tb_dff_asyncres.v
+./a.out
+gtkwave tb_dff_asyncres.v
+```
+Screenshot:
+<p align="center">
+  <img src="dff_asyn.png" alt="async_gtkwave" width="600"/>
+</p>
 
 ### (b) Asynchronous Set
 
@@ -187,6 +202,17 @@ module dff_async_set (input clk, input async_set, input d, output reg q);
       q <= d;
 endmodule
 ```
+## Simulation Steps
+```bash
+iverilog dff_async_set.v tb_dff_async_set.v
+./a.out
+gtkwave tb_dff_async_set.v
+```
+
+Screenshot:
+<p align="center">
+  <img src="dff_async_set.png" alt="dff_async_set gtkwave" width="600"/>
+</p>
 
 ### (c) Synchronous Reset
 
@@ -200,31 +226,7 @@ module dff_syncres (input clk, input async_reset, input sync_reset, input d, out
 endmodule
 ```
 
----
-
 ## Simulation Steps
-
-```bash
-iverilog dff_asyncres.v tb_dff_asyncres.v
-./a.out
-gtkwave tb_dff_asyncres.v
-```
-Screenshot:
-<p align="center">
-  <img src="dff_asyn.png" alt="async_gtkwave" width="600"/>
-</p>
-
-```bash
-iverilog dff_async_set.v tb_dff_async_set.v
-./a.out
-gtkwave tb_dff_async_set.v
-```
-
-Screenshot:
-<p align="center">
-  <img src="dff_async_set.png" alt="dff_async_set gtkwave" width="600"/>
-</p>
-
 ```bash
 iverilog dff_syncres.v tb_dff_syncres.v
 ./a.out
@@ -236,12 +238,15 @@ Screenshot:
   <img src="dff_sync.png" alt="dff_sync gtkwave" width="600"/>
 </p>
 
+----
 
-## Synthesis of Flip-Flops
+
+## Synthesis
 
 ```tcl
 read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 ```
+### (a) Asynchronous Reset
 ```tcl
 read_verilog dff_asyncres.v
 synth -top dff_asyncres
@@ -254,6 +259,7 @@ Screenshot:
   <img src="dff_async.png" alt="dff_async" width="600"/>
 </p>
 
+### (b) Asynchronous Set
 ```tcl
 read_verilog dff_async_set.v
 synth -top dff_async_set
@@ -266,6 +272,7 @@ Screenshot:
   <img src="dff_asyncset.png" alt="dff_asyncset" width="600"/>
 </p>
 
+### (c) Synchronous Reset
 ```tcl
 read_verilog dff_syncres.v
 synth -top dff_syncres
@@ -279,7 +286,7 @@ Screenshot:
   <img src="dff_syncres.png" alt="dff_sync" width="600"/>
 </p>
 
----
+----
 
 ## Optimization Examples
 
@@ -301,7 +308,7 @@ Screenshot:
   <img src="mul2.png" alt="multiply2" width="600"/>
 </p>
 
----
+----
 
 ### Example 2: Multiply by 9
 
@@ -321,7 +328,7 @@ Screenshot:
   <img src="mul8.png" alt="multiply8" width="600"/>
 </p>
 
----
+----
 
 ## Combinational Logic Optimization
 
@@ -342,4 +349,4 @@ y = A ? (B ? C : (C ? A : 0)) : !C
 // Simplified → y = A XNOR B
 ```
 
----
+----
