@@ -15,7 +15,6 @@
   - [Synchronous Reset](#c-synchronous-reset)
 - [Simulation Steps](#simulation-steps)
 - [Synthesis of Flip-Flops](#synthesis-of-flip-flops)
-- [Yosys History (Relevant)](#yosys-history-relevant)
 - [Optimization Examples](#optimization-examples)
 - [Combinational Logic Optimization](#combinational-logic-optimization)
 
@@ -105,7 +104,7 @@ write_verilog -noattr multiple_modules_hier.v
 !gedit multiple_modules_hier.v
 ```
 
-📷 Sample screenshot:
+Screenshot:
 <p align="center">
   <img src="hier.png" alt="hierarchy" width="600"/>
 </p>
@@ -122,7 +121,7 @@ write_verilog -noattr multiple_modules_flat.v
 show
 ```
 
-📷 Screenshot:
+Screenshot:
 <p align="center">
   <img src="flat.png" alt="flattened" width="600"/>
 </p>
@@ -138,7 +137,7 @@ synth -top sub_module1
 abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 show
 ```
-📷 Screenshot:
+Screenshot:
 <p align="center">
   <img src="sub_m1.png" alt="sub_module1" width="600"/>
 </p>
@@ -168,39 +167,36 @@ Combinational circuits may cause **glitches** due to propagation delay. To avoid
 ### (a) Asynchronous Reset
 
 ```verilog
-module dff_asyncres (input clk, input reset, input d, output reg q);
-    always @(posedge clk or posedge reset) begin
-        if (reset)
-            q <= 0;
-        else
-            q <= d;
-    end
+module dff_asyncres (input clk, input async_reset, input d, output reg q);
+  always @ (posedge clk, posedge async_reset)
+    if (async_reset)
+      q <= 1'b0;
+    else
+      q <= d;
 endmodule
 ```
 
 ### (b) Asynchronous Set
 
 ```verilog
-module dff_async_set (input clk, input set, input d, output reg q);
-    always @(posedge clk or posedge set) begin
-        if (set)
-            q <= 1;
-        else
-            q <= d;
-    end
+module dff_async_set (input clk, input async_set, input d, output reg q);
+  always @ (posedge clk, posedge async_set)
+    if (async_set)
+      q <= 1'b1;
+    else
+      q <= d;
 endmodule
 ```
 
 ### (c) Synchronous Reset
 
 ```verilog
-module dff_syncres (input clk, input reset, input d, output reg q);
-    always @(posedge clk) begin
-        if (reset)
-            q <= 0;
-        else
-            q <= d;
-    end
+module dff_syncres (input clk, input async_reset, input sync_reset, input d, output reg q);
+  always @ (posedge clk)
+    if (sync_reset)
+      q <= 1'b0;
+    else
+      q <= d;
 endmodule
 ```
 
@@ -212,39 +208,65 @@ endmodule
 iverilog dff_asyncres.v tb_dff_asyncres.v
 ./a.out
 gtkwave tb_dff_asyncres.v
+```
+Screenshot:
+<p align="center">
+  <img src="dff_asyn.png" alt="async_gtkwave" width="600"/>
+</p>
 
+```bash
 iverilog dff_async_set.v tb_dff_async_set.v
 ./a.out
 gtkwave tb_dff_async_set.v
+```
 
+Screenshot:
+<p align="center">
+  <img src="dff_async_set.png" alt="dff_async_set gtkwave" width="600"/>
+</p>
+
+```bash
 iverilog dff_syncres.v tb_dff_syncres.v
 ./a.out
 gtkwave tb_dff_syncres.v
 ```
 
-📷 Example screenshot:
+Screenshot:
 <p align="center">
-  <img src=".png" alt="" width="600"/>
+  <img src="dff_sync.png" alt="dff_sync gtkwave" width="600"/>
 </p>
----
+
 
 ## Synthesis of Flip-Flops
 
 ```tcl
 read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
-
+```
+```tcl
 read_verilog dff_asyncres.v
 synth -top dff_asyncres
 dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 show
+```
+Screenshot:
+<p align="center">
+  <img src="dff_async.png" alt="dff_async" width="600"/>
+</p>
 
+```tcl
 read_verilog dff_async_set.v
 synth -top dff_async_set
 dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 show
+```
+Screenshot:
+<p align="center">
+  <img src="dff_asyncset.png" alt="dff_asyncset" width="600"/>
+</p>
 
+```tcl
 read_verilog dff_syncres.v
 synth -top dff_syncres
 dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
@@ -252,22 +274,10 @@ abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 show
 ```
 
-📷 Sample screenshot:
+Screenshot:
 <p align="center">
-  <img src=".png" alt="" width="600"/>
+  <img src="dff_syncres.png" alt="dff_sync" width="600"/>
 </p>
----
-
-## Yosys History (Relevant)
-
-```tcl
-read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
-read_verilog dff_asyncres.v
-synth -top dff_asyncres
-dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
-abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
-show
-```
 
 ---
 
@@ -286,6 +296,10 @@ Yosys optimization result:
 ```verilog
 assign y = {a, 1'h0}; // just left shift
 ```
+Screenshot:
+<p align="center">
+  <img src="mul2.png" alt="multiply2" width="600"/>
+</p>
 
 ---
 
@@ -302,6 +316,10 @@ Optimized netlist:
 ```verilog
 assign y = {a, a}; // concatenation (a*8 + a)
 ```
+Screenshot:
+<p align="center">
+  <img src="mul8.png" alt="multiply8" width="600"/>
+</p>
 
 ---
 
