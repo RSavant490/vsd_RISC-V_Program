@@ -319,9 +319,11 @@ Screenshot:
 </table>
   
 <p align="center">
-  <img src="screenshots/dff_const5.png" alt="dff_const5 simulation waveform" width="600"/>
+  <img src="screenshots/dff_const5.png" alt="dff_const5 simulation waveform" width="400"/>
+	<br/>
   dff_const5
 </p>
+
 
 **Yosys Synthesis**
 
@@ -343,15 +345,15 @@ Screenshot:
       dff_const1
     </td>
     <td align="center">
-      <img src="screenshots/dff_cons2.png" alt="dff_const2 yosys optimized netlist" width="400"/><br/>
-      dff_const2
+      <img src="screenshots/dff_cons3.png" alt="dff_const3 yosys optimized netlist" width="400"/><br/>
+      dff_const3
     </td>
   </tr>
   <table align="center">
   <tr>
     <td align="center">
-      <img src="screenshots/dff_cons3.png" alt="dff_const3 yosys optimized netlist" width="400"/><br/>
-      dff_const3
+      <img src="screenshots/dff_cons2.png" alt="dff_const2 yosys optimized netlist" width="400"/><br/>
+      dff_const2
     </td>
     <td align="center">
       <img src="screenshots/dff_cons4.png" alt="dff_const4 yosys optimized netlist" width="400"/><br/>
@@ -418,8 +420,5 @@ Screenshot:
     </td>
   </tr>
 </table>
-<p align="center">
-  <img src="screenshots/counter_opt2.png" alt="counter_opt2 optimized netlist" width="600"/>
-</p>
 
 ---
