@@ -239,5 +239,3 @@ end
 * **Blocking (`=`)** → Combinational logic.
 * **Non-Blocking (`<=`)** → Sequential logic.
 * Labs demonstrated common pitfalls and fixes with **MUX** and **blocking caveat** examples.
-
-```
