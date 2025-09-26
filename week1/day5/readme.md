@@ -47,13 +47,13 @@ end
 endmodule
 ````
 
-📷 Simulation (GTKWave)
+Simulation (GTKWave)
 
 <p align="center">
   <img src="screenshots/incomp_if_gtk.png" alt="incomplete if GTKWave" width="600"/>
 </p>
 
-📷 Yosys Synthesis
+Yosys Synthesis
 
 <p align="center">
   <img src="screenshots/incomp_if.png" alt="incomplete if Yosys" width="600"/>
@@ -75,13 +75,13 @@ end
 endmodule
 ```
 
-📷 Simulation (GTKWave)
+Simulation (GTKWave)
 
 <p align="center">
   <img src="screenshots/incomp_if2_gtk.png" alt="incomplete if2 GTKWave" width="600"/>
 </p>
 
-📷 Yosys Synthesis
+Yosys Synthesis
 
 <p align="center">
   <img src="screenshots/incomp_if2.png" alt="incomplete if2 Yosys" width="600"/>
@@ -109,13 +109,13 @@ end
 endmodule
 ```
 
-📷 Simulation (GTKWave)
+Simulation (GTKWave)
 
 <p align="center">
   <img src="screenshots/incomp_case_gtk.png" alt="incomplete case GTKWave" width="600"/>
 </p>
 
-📷 Yosys Synthesis
+Yosys Synthesis
 
 <p align="center">
   <img src="screenshots/incomp_case.png" alt="incomplete case Yosys" width="600"/>
@@ -138,13 +138,13 @@ end
 endmodule
 ```
 
-📷 Simulation (GTKWave)
+Simulation (GTKWave)
 
 <p align="center">
   <img src="screenshots/comp_case_gtk.png" alt="complete case GTKWave" width="600"/>
 </p>
 
-📷 Yosys Synthesis
+Yosys Synthesis
 
 <p align="center">
   <img src="screenshots/comp_case.png" alt="complete case Yosys" width="600"/>
@@ -173,16 +173,16 @@ end
 endmodule
 ```
 
-📷 Simulation (GTKWave)
+Simulation (GTKWave)
 
 <p align="center">
-  <img src="screenshots/partial_case_gtk.png" alt="partial case GTKWave" width="600"/>
+  <img src="screenshots/partial_case_assign_gtk.png" alt="partial case GTKWave" width="600"/>
 </p>
 
-📷 Yosys Synthesis
+Yosys Synthesis
 
 <p align="center">
-  <img src="screenshots/partial_case.png" alt="partial case Yosys" width="600"/>
+  <img src="screenshots/partial_case_assign.png" alt="partial case Yosys" width="600"/>
 </p>
 
 ---
@@ -202,8 +202,18 @@ begin
 end
 endmodule
 ```
+Simulation (GTKWave)
 
-📷 GLS (Gate-Level Simulation)
+<p align="center">
+  <img src="screenshots/bad_case_gtk.png" alt="bad case GTKWave" width="600"/>
+</p>
+
+Yosys Synthesis
+
+<p align="center">
+  <img src="screenshots/bad_case.png" alt="bad case Yosys" width="600"/>
+</p>
+GLS (Gate-Level Simulation)
 
 <p align="center">
   <img src="screenshots/bad_case_gls.png" alt="bad case GLS" width="600"/>
@@ -230,16 +240,16 @@ end
 endmodule
 ```
 
-📷 Simulation (GTKWave)
+Simulation (GTKWave)
 
 <p align="center">
-  <img src="screenshots/mux_generate_gtk.png" alt="mux generate GTKWave" width="600"/>
+  <img src="screenshots/mux_gen_gtk.png" alt="mux generate GTKWave" width="600"/>
 </p>
 
-📷 Yosys Synthesis
+Yosys Synthesis
 
 <p align="center">
-  <img src="screenshots/mux_generate.png" alt="mux generate Yosys" width="600"/>
+  <img src="screenshots/mux_gen.png" alt="mux generate Yosys" width="600"/>
 </p>
 
 ---
@@ -262,16 +272,16 @@ end
 endmodule
 ```
 
-📷 Simulation (GTKWave)
+Simulation (GTKWave)
 
 <p align="center">
-  <img src="screenshots/demux_generate_gtk.png" alt="demux generate GTKWave" width="600"/>
+  <img src="screenshots/demux_gen_gtk.png" alt="demux generate GTKWave" width="600"/>
 </p>
 
-📷 Yosys Synthesis
+Yosys Synthesis
 
 <p align="center">
-  <img src="screenshots/demux_generate.png" alt="demux generate Yosys" width="600"/>
+  <img src="screenshots/demux_gen.png" alt="demux generate Yosys" width="600"/>
 </p>
 
 ---
@@ -297,13 +307,13 @@ assign sum[8] = int_co[7];
 endmodule
 ```
 
-📷 Simulation (GTKWave)
+Simulation (GTKWave)
 
 <p align="center">
   <img src="screenshots/rca_gtk.png" alt="ripple carry adder GTKWave" width="600"/>
 </p>
 
-📷 Yosys Synthesis
+Yosys Synthesis
 
 <p align="center">
   <img src="screenshots/rca.png" alt="ripple carry adder Yosys" width="600"/>
