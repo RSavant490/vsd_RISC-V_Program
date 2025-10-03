@@ -67,7 +67,7 @@ Open the waveform:
 gtkwave output/pre_synth_sim.vcd
 ```
 <p align="center">
-   <img src="images/waveform.png" alt="BabySoC Waveform" width="600"/>
+   <img src="waveform.png" alt="BabySoC Waveform" width="600"/>
 </p>
 * GTKWave GUI opens, showing all signals.
 * Typical signals to analyze:
