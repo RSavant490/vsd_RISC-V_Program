@@ -1,4 +1,4 @@
-# **Part 1 – BabySoC Fundamentals & Functional Modelling **
+# **Part 1 – BabySoC Fundamentals & Functional Modelling**
 
 ## **Objective**
 
