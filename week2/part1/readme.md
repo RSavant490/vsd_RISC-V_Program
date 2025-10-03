@@ -51,8 +51,7 @@ A **System-on-Chip (SoC)** is a single-chip solution that integrates most or all
    * Example: Graphics accelerators, AI chips.
 
 **SoC Design Flow**:
-
-![SoC Design Flow](images/soc.png "Design flow")
+<p align="center"> <img src="images/soc.png" alt="Design flow" width="400"/> </p>
 
 ---
 
@@ -93,7 +92,7 @@ A **System-on-Chip (SoC)** is a single-chip solution that integrates most or all
 * This analog signal can drive TVs, audio devices, or other analog systems.
 
 **Block Diagram of BabySoC:**
-![BabySoC Block Diagram](images/vsdbaby.png "VSDBabySoC Components")
+<p align="center"> <img src="images/vsdbaby.png" alt="VSDBabySoC Components"/> </p>
 
 ---
 
@@ -114,7 +113,7 @@ A **PLL** is a feedback system that locks the output clock phase to a reference 
 * Mitigates clock jitter and frequency deviations.
 
 **Block Diagram of PLL:**
-![PLL Block Diagram](images/pll.png "Phase-Locked Loop")
+<p align="center"> <img src="images/pll.png" alt="Phase-Locked Loop" width="400"/> </p>
 
 ---
 
@@ -144,9 +143,9 @@ The DAC in BabySoC receives the 10-bit digital output from the RVMYTH core (`RV_
 
 The output analog voltage `OUT` is calculated using the standard formula for an N-bit DAC:
 
-[
+$$
 OUT = VREFL + \frac{D}{2^N - 1} \cdot (VREFH - VREFL)
-]
+$$
 
 Where:
 
@@ -159,9 +158,9 @@ Where:
 
 * If `D = 512`, `VREFL = 0V`, `VREFH = 3.3V`:
 
-[
+$$
 OUT = 0 + \frac{512}{1023} \cdot 3.3 \approx 1.65V
-]
+$$
 
 This shows that the DAC converts the digital midpoint to roughly half of the reference voltage.
 
@@ -176,18 +175,15 @@ There are several DAC architectures, each with pros and cons:
    * Uses resistors weighted by powers of 2.
    * Simple but requires precise resistor values.
    * Suitable for low-resolution DACs.
-
-![Binary-Weighted DAC](images/binary.png "Binary-Weighted Resistor DAC")
- 
+   
+<p align="center"> <img src="images/binary.jpg" alt="Binary-Weighted Resistor DAC"/> </p> 
 
 2. **R-2R Ladder DAC**
 
    * Uses a repeating network of resistors in a ladder configuration.
    * More practical for higher resolutions like 10-bit and above.
    * Easy to scale and less sensitive to resistor mismatch.
-
-![R-2R Ladder DAC](images/r2r.png "R-2R Ladder DAC")
-
+<p align="center"> <img src="images/r2r.jpg" alt="R-2R Ladder DAC"/> </p>
 
 ---
 
